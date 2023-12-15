@@ -9,9 +9,7 @@ export class UserController {
 
     const userExists = await userRepository.findOne({ where: { email } })
 
-    if (userExists) {
-      throw new BadRequestError('Email already exists')
-    }
+    if (userExists) throw new BadRequestError('Email already exists')
 
     const hashPassword = await bcrypt.hash(password, 10)
 
