@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Cart } from "./Cart";
 
 @Entity('products')
 export class Product {
@@ -25,4 +26,8 @@ export class Product {
 
   @Column({ type: 'boolean' })
   featured: boolean
+
+  @ManyToOne(() => Cart, (cart) => cart.products)
+  @JoinColumn()
+  cart: Cart
 }

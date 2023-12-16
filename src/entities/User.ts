@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, JoinTable, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Cart } from "./Cart";
 
 @Entity('users')
 export class User {
@@ -13,4 +14,8 @@ export class User {
 
   @Column({ type: 'text' })
   password: string
+
+  @OneToOne(() => Cart, (cart) => cart.id, { cascade: true, eager: true })
+  @JoinColumn()
+  cart: Cart
 }
