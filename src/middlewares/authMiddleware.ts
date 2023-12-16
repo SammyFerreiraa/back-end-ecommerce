@@ -16,7 +16,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     const { id } = jwt.verify(token, process.env.JWT_PASS as string) as JwtPayload
 
-    const userExist = await userRepository.findOneBy({ id: Number(id) })
+    const userExist = await userRepository.findOneBy({ id })
 
     if (!userExist) throw new UnauthorizedError('Unauthorized') 
     
