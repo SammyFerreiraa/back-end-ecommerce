@@ -15,9 +15,6 @@ export class Product {
   @Column({ type: 'text' })
   description: string
 
-  @Column({ type: 'int' })
-  availableQuantity: number 
-
   @Column({ type: 'text' })
   category: string
 

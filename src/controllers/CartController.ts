@@ -15,6 +15,10 @@ export class CartController {
 
     if (!product) throw new BadRequestError("Product not found")
 
+    if (product.availableQuantity <= 0) throw new BadRequestError("Product not available")
+    product.availableQuantity -= 1
+    await allProductsRepository.save(product)
+
     const cart = await cartRepository.findOneBy({ id: cartId })
 
     if (!cart) throw new BadRequestError("Cart not found")
@@ -23,7 +27,6 @@ export class CartController {
       name: product.name,
       price: product.price,
       description: product.description,
-      availableQuantity: product.availableQuantity,
       category: product.category,
       image: product.image,
       featured: product.featured,
