@@ -9,9 +9,9 @@ export class CartController {
     if (!req.user) throw new BadRequestError("User not found")
 
     const { cartId } = req.body
-    const { productId } = req.body
+    const { productCode } = req.body
 
-    const product = await allProductsRepository.findOneBy({ id: productId })
+    const product = await allProductsRepository.findOneBy({ code: productCode })
     if (!product) throw new BadRequestError("Product not found")
 
     if (product.availableQuantity <= 0) throw new BadRequestError("Product not available")
@@ -21,13 +21,13 @@ export class CartController {
     const cart = await cartRepository.findOneBy({ id: cartId })
     if (!cart) throw new BadRequestError("Cart not found")
 
-    if (cart.products.find(products => products.name === product.name)) {
-      const productCart = await productRepository.findOneBy({ name: product.name })
+    if (cart.products.find(products => products.code === product.code)) {
+      const productCart = await productRepository.findOneBy({ code: product.code })
       if (!productCart) throw new BadRequestError("Product not found")
 
       productCart.quantity += 1
       await productRepository.save(productCart)
-      return res.status(200).end()
+      return res.status(200).send('Product added to cart')
     }
 
     const ProductAdd = await productRepository.create({
@@ -35,6 +35,7 @@ export class CartController {
       price: product.price,
       description: product.description,
       quantity: 1,
+      code: product.code,
       category: product.category,
       image: product.image,
       featured: product.featured,
@@ -53,15 +54,15 @@ export class CartController {
     if (!req.user) throw new BadRequestError("User not found")
 
     const { cartId } = req.body
-    const { productName } = req.body
+    const { productCode } = req.body
 
     const cart = await cartRepository.findOneBy({ id: cartId })
     if (!cart) throw new BadRequestError("Cart not found")
 
-    const productDeleted = await productRepository.findOneBy({ name: productName })
+    const productDeleted = await productRepository.findOneBy({ code: productCode })
     if (!productDeleted) throw new BadRequestError("Product not found")
 
-    const product = await allProductsRepository.findOneBy({ name: productName })
+    const product = await allProductsRepository.findOneBy({ code: productCode })
     if (!product) throw new BadRequestError("Product not found")
 
     if (productDeleted.quantity <= 1) {
