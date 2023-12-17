@@ -24,6 +24,9 @@ export class Product {
   @Column({ type: 'boolean' })
   featured: boolean
 
+  @Column({ type: 'int' })
+  quantity: number
+
   @ManyToOne(() => Cart, (cart) => cart.products)
   @JoinColumn()
   cart: Cart
