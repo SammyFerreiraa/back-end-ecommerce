@@ -16,5 +16,6 @@ routes.use(authMiddleware)
 
 routes.get('/profile', new ProfileController().getProfile)
 routes.post('/products', new CartController().addToCart)
+routes.delete('/products', new CartController().removeToCart)
 
 export default routes

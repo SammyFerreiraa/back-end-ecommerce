@@ -46,6 +46,37 @@ export class CartController {
 
     await cartRepository.save(cart)
 
-    return res.status(200).end()
-  }  
+    return res.status(200).send('Product added to cart')
+  }
+
+  async removeToCart(req: Request, res: Response) {
+    if (!req.user) throw new BadRequestError("User not found")
+
+    const { cartId } = req.body
+    const { productName } = req.body
+
+    const cart = await cartRepository.findOneBy({ id: cartId })
+    if (!cart) throw new BadRequestError("Cart not found")
+
+    const productDeleted = await productRepository.findOneBy({ name: productName })
+    if (!productDeleted) throw new BadRequestError("Product not found")
+
+    const product = await allProductsRepository.findOneBy({ name: productName })
+    if (!product) throw new BadRequestError("Product not found")
+
+    if (productDeleted.quantity <= 1) {
+      await productRepository.delete(productDeleted.id)
+      product.availableQuantity += 1
+      await allProductsRepository.save(product)
+      return res.status(200).send('Product removed from cart')
+    }
+
+    productDeleted.quantity -= 1
+    await productRepository.save(productDeleted)
+
+    product.availableQuantity += 1
+    await allProductsRepository.save(product)
+
+    return res.status(200).send('Product removed from cart')
+  }
 }
