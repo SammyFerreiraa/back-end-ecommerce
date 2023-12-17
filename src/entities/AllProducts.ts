@@ -9,6 +9,9 @@ export class AllProducts {
   name: string
 
   @Column({ type: 'text' })
+  code: string
+
+  @Column({ type: 'text' })
   price: string
 
   @Column({ type: 'text' })

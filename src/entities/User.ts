@@ -12,6 +12,9 @@ export class User {
   @Column({ type: 'text', unique: true,  })
   email: string
 
+  @Column({ type: 'boolean', default: false })
+  admin: boolean
+
   @Column({ type: 'text' })
   password: string
 
