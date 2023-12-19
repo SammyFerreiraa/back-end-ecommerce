@@ -13,15 +13,10 @@ routes.post('/users', new UserController().create)
 routes.post('/login', new LoginController().login)
 routes.get('/products', new ProductsController().getProducts)
 
-routes.use(authMiddleware)
-
-routes.get('/profile', new ProfileController().getProfile)
-routes.post('/cart', new CartController().addToCart)
-routes.delete('/cart', new CartController().removeToCart)
-
-routes.use(adminMiddleware)
-
-routes.post('/product', new ProductsController().createProduct)
+routes.get('/profile', authMiddleware, new ProfileController().getProfile)
+routes.post('/cart', authMiddleware, new CartController().addToCart)
+routes.delete('/cart', authMiddleware, new CartController().removeToCart)
+routes.post('/product', authMiddleware, adminMiddleware, new ProductsController().createProduct)
 
 
 export default routes
