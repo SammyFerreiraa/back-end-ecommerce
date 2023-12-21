@@ -9,12 +9,12 @@ export class ProductsController {
   }
 
   async createProduct (req: Request, res: Response) {
-    const { name, price, description, availableQuantity, featured, category, image, code } = req.body
+    const { name, price, description, availableQuantity, featured, category, image, code, discount, offer } = req.body
 
     const existingProduct = await allProductsRepository.findOneBy({ code })
     if (existingProduct) throw new BadRequestError('Product already exists')
 
-    const product = allProductsRepository.create({ name, price, description, availableQuantity, featured, category, image, code })
+    const product = allProductsRepository.create({ name, price, description, availableQuantity, featured, category, image, code, discount, offer })
     await allProductsRepository.save(product)
     return res.status(201).json(product)
   }

@@ -34,6 +34,8 @@ export class CartController {
       name: product.name,
       price: product.price,
       description: product.description,
+      offer: product.offer,
+      discount: product.discount,
       quantity: 1,
       code: product.code,
       category: product.category,
