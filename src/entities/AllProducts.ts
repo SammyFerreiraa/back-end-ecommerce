@@ -17,6 +17,12 @@ export class AllProducts {
   @Column({ type: 'text' })
   description: string
 
+  @Column({ type: 'boolean' })
+  offer: boolean
+
+  @Column({ type: 'text' })
+  discount: string
+
   @Column({ type: 'int' })
   availableQuantity: number 
 

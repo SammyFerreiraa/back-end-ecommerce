@@ -13,9 +13,5 @@ AppDataSource.initialize().then(() => {
 
   app.use(errorMiddleware)
 
-  app.get('/', (req, res) => {
-    res.send('Tudo Certo!')
-  })
-
   return app.listen(process.env.PORT)
 });

@@ -18,6 +18,12 @@ export class Product {
   @Column({ type: 'text' })
   description: string
 
+  @Column({ type: 'boolean' })
+  offer: boolean
+
+  @Column({ type: 'text' })
+  discount: string
+
   @Column({ type: 'text' })
   category: string
 
