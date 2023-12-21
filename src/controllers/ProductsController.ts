@@ -16,6 +16,14 @@ export class ProductsController {
 
     const product = allProductsRepository.create({ name, price, description, availableQuantity, featured, category, image, code, discount, offer })
     await allProductsRepository.save(product)
-    return res.status(201).json(product)
+    return res.status(201).send('Criado com sucesso!')
+  }
+
+  async deleteProduct (req: Request, res: Response) {
+    const { code } = req.body
+    const product = await allProductsRepository.findOneBy({ code })
+    if (!product) throw new BadRequestError('Product not found')
+    await allProductsRepository.delete({ code })
+    return res.status(200).send('Deletado com sucesso!')
   }
 }
