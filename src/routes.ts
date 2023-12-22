@@ -19,5 +19,4 @@ routes.delete('/cart', authMiddleware, new CartController().removeToCart)
 routes.post('/product', authMiddleware, adminMiddleware, new ProductsController().createProduct)
 routes.delete('/product', authMiddleware, adminMiddleware, new ProductsController().deleteProduct)
 
-
 export default routes
