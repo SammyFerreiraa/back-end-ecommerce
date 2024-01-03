@@ -82,4 +82,25 @@ export class CartController {
 
     return res.status(200).send('Product removed from cart')
   }
+
+  async removeAllProduct(req: Request, res: Response) {
+    const { cartId } = req.body
+    const { productCode } = req.body
+
+    const cart = await cartRepository.findOneBy({ id: cartId })
+    if (!cart) throw new BadRequestError("Cart not found")
+
+    const product = await allProductsRepository.findOneBy({ code: productCode })
+    if (!product) throw new BadRequestError("Product not found")
+    
+    const deletedProduct = await productRepository.findOneBy({ code: productCode })
+    if (!deletedProduct) throw new BadRequestError("Product not found")
+
+    product.availableQuantity += deletedProduct.quantity
+    await allProductsRepository.save(product)
+
+    await productRepository.delete(deletedProduct.id)
+
+    return res.status(200).send('Product removed from cart')
+  }
 }
