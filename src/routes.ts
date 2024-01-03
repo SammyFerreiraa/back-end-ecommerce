@@ -19,7 +19,11 @@ routes.get('/profile', authMiddleware, new ProfileController().getProfile)
 
 routes.post('/cart', authMiddleware, new CartController().addToCart)
 routes.delete('/cart', authMiddleware, new CartController().removeToCart)
+
+
 routes.delete('/cart/removeitem', authMiddleware, new CartController().removeAllProduct)
+
+routes.post('/cart/updatequantity', authMiddleware, new CartController().editQuantity)
 
 routes.post('/product', authMiddleware, adminMiddleware, new ProductsController().createProduct)
 routes.delete('/product', authMiddleware, adminMiddleware, new ProductsController().deleteProduct)

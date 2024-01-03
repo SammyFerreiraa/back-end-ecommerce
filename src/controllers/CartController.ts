@@ -54,12 +54,8 @@ export class CartController {
 
   async removeToCart(req: Request, res: Response) {
     if (!req.user) throw new BadRequestError("User not found")
-
-    const { cartId } = req.body
     const { productCode } = req.body
 
-    const cart = await cartRepository.findOneBy({ id: cartId })
-    if (!cart) throw new BadRequestError("Cart not found")
 
     const productDeleted = await productRepository.findOneBy({ code: productCode })
     if (!productDeleted) throw new BadRequestError("Product not found")
@@ -84,11 +80,7 @@ export class CartController {
   }
 
   async removeAllProduct(req: Request, res: Response) {
-    const { cartId } = req.body
     const { productCode } = req.body
-
-    const cart = await cartRepository.findOneBy({ id: cartId })
-    if (!cart) throw new BadRequestError("Cart not found")
 
     const product = await allProductsRepository.findOneBy({ code: productCode })
     if (!product) throw new BadRequestError("Product not found")
@@ -102,5 +94,25 @@ export class CartController {
     await productRepository.delete(deletedProduct.id)
 
     return res.status(200).send('Product removed from cart')
+  }
+
+  async editQuantity(req: Request, res: Response) {
+    const { productCode } = req.body
+    const { quantity } = req.body
+
+    const product = await allProductsRepository.findOneBy({ code: productCode })
+    if (!product) throw new BadRequestError("Product not found")
+
+    const productCart = await productRepository.findOneBy({ code: productCode })
+    if (!productCart) throw new BadRequestError("Product not found")
+
+    if (quantity > product.availableQuantity) throw new BadRequestError("Quantity not available")
+
+    product.availableQuantity -= quantity - productCart.quantity
+    await allProductsRepository.save(product)
+
+    productCart.quantity = quantity
+    await productRepository.save(productCart)
+    return res.status(200).send('Quantity updated')
   }
 }
