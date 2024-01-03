@@ -6,50 +6,47 @@ import { allProductsRepository } from "../repositories/allProductsRepository";
 
 export class CartController {
   async addToCart(req: Request, res: Response) {
-    if (!req.user) throw new BadRequestError("User not found")
-
-    const { cartId } = req.body
-    const { productCode } = req.body
-
-    const product = await allProductsRepository.findOneBy({ code: productCode })
-    if (!product) throw new BadRequestError("Product not found")
-
-    if (product.availableQuantity <= 0) throw new BadRequestError("Product not available")
-    product.availableQuantity -= 1
-    await allProductsRepository.save(product)
-
-    const cart = await cartRepository.findOneBy({ id: cartId })
-    if (!cart) throw new BadRequestError("Cart not found")
-
-    if (cart.products.find(products => products.code === product.code)) {
-      const productCart = await productRepository.findOneBy({ code: product.code })
-      if (!productCart) throw new BadRequestError("Product not found")
-
-      productCart.quantity += 1
-      await productRepository.save(productCart)
-      return res.status(200).send('Product added to cart')
+    if (!req.user) {
+      throw new BadRequestError("User not found");
     }
-
-    const ProductAdd = await productRepository.create({
-      name: product.name,
-      price: product.price,
-      description: product.description,
-      offer: product.offer,
-      discount: product.discount,
+  
+    const { cartId, productCode } = req.body;
+  
+    const product = await allProductsRepository.findOneBy({ code: productCode });
+    if (!product) {
+      throw new BadRequestError("Product not found");
+    }
+  
+    if (product.availableQuantity <= 0) {
+      throw new BadRequestError("Product not available");
+    }
+    product.availableQuantity -= 1;
+    await allProductsRepository.save(product);
+  
+    const cart = await cartRepository.findOneBy({ id: cartId });
+    if (!cart) {
+      throw new BadRequestError("Cart not found");
+    }
+  
+    const productCart = cart.products.find(item => item.code === product.code);
+    if (productCart) {
+      productCart.quantity ++;
+      await productRepository.save(productCart);
+      return res.status(200).send('Product existing added to cart').end();
+    }
+  
+    const newProduct = await productRepository.create({
+      ...product,
       quantity: 1,
-      code: product.code,
-      category: product.category,
-      image: product.image,
-      featured: product.featured,
       cart
-    })
-    await productRepository.save(ProductAdd)
-
-    cart.products.push(ProductAdd)
-
-    await cartRepository.save(cart)
-
-    return res.status(200).send('Product added to cart')
+    });
+    await productRepository.save(newProduct);
+  
+    cart.products.push(newProduct);
+  
+    await cartRepository.save(cart);
+  
+    return res.status(200).send('Product added to cart').end();
   }
 
   async removeToCart(req: Request, res: Response) {
@@ -67,7 +64,7 @@ export class CartController {
       await productRepository.delete(productDeleted.id)
       product.availableQuantity += 1
       await allProductsRepository.save(product)
-      return res.status(200).send('Product removed from cart')
+      return res.status(200).send('Product removed from cart').end()
     }
 
     productDeleted.quantity -= 1
@@ -76,7 +73,7 @@ export class CartController {
     product.availableQuantity += 1
     await allProductsRepository.save(product)
 
-    return res.status(200).send('Product removed from cart')
+    return res.status(200).send('Product removed from cart').end()
   }
 
   async removeAllProduct(req: Request, res: Response) {
@@ -93,7 +90,7 @@ export class CartController {
 
     await productRepository.delete(deletedProduct.id)
 
-    return res.status(200).send('Product removed from cart')
+    return res.status(200).send('Product removed from cart').end()
   }
 
   async editQuantity(req: Request, res: Response) {
@@ -113,6 +110,6 @@ export class CartController {
 
     productCart.quantity = quantity
     await productRepository.save(productCart)
-    return res.status(200).send('Quantity updated')
+    return res.status(200).send('Quantity updated').end()
   }
 }
