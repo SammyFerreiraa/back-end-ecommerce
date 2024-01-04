@@ -49,31 +49,23 @@ export class CartController {
     return res.status(200).send('Product added to cart').end();
   }
 
-  async removeToCart(req: Request, res: Response) {
-    if (!req.user) throw new BadRequestError("User not found")
-    const { productCode } = req.body
+  async removeAll(req: Request, res: Response) {
+    const { cartId } = req.body
 
+    const cartUsed = await cartRepository.findOneBy({ id: cartId })
+    if (!cartUsed) throw new BadRequestError("Cart not found")
 
-    const productDeleted = await productRepository.findOneBy({ code: productCode })
-    if (!productDeleted) throw new BadRequestError("Product not found")
-
-    const product = await allProductsRepository.findOneBy({ code: productCode })
-    if (!product) throw new BadRequestError("Product not found")
-
-    if (productDeleted.quantity <= 1) {
-      await productRepository.delete(productDeleted.id)
-      product.availableQuantity += 1
+    for (let i = 0; i < cartUsed.products.length; i++) {
+      const product = await allProductsRepository.findOneBy({ code: cartUsed.products[i].code })
+      if (!product) throw new BadRequestError("Product not found")
+      product.availableQuantity += cartUsed.products[i].quantity
       await allProductsRepository.save(product)
-      return res.status(200).send('Product removed from cart').end()
     }
 
-    productDeleted.quantity -= 1
-    await productRepository.save(productDeleted)
+    cartUsed.products = []
+    await cartRepository.save(cartUsed)
 
-    product.availableQuantity += 1
-    await allProductsRepository.save(product)
-
-    return res.status(200).send('Product removed from cart').end()
+    return res.status(200).send('Cart emptied').end()
   }
 
   async removeAllProduct(req: Request, res: Response) {
