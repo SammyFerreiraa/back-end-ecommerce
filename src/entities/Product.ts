@@ -12,7 +12,7 @@ export class Product {
   @Column({ type: 'text' })
   code: string
 
-  @Column({ type: 'money' })
+  @Column({ type: 'decimal' })
   price: Decimal128
 
   @Column({ type: 'text' })
