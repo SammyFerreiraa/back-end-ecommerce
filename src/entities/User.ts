@@ -1,5 +1,6 @@
 import { BeforeInsert, Column, Entity, JoinColumn, JoinTable, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Cart } from "./Cart";
+import { Favorites } from "./Favorites";
 
 @Entity('users')
 export class User {
@@ -21,4 +22,8 @@ export class User {
   @OneToOne(() => Cart, (cart) => cart.id, { cascade: true, eager: true })
   @JoinColumn()
   cart: Cart
+
+  @OneToOne(() => Favorites, (favorites) => favorites.id, { cascade: true, eager: true })
+  @JoinColumn()
+  favorites: Favorites
 }
