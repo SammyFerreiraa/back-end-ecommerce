@@ -3,6 +3,7 @@ import { userRepository } from "../repositories/userRepository";
 import { BadRequestError } from "../helpers/api-erros";
 import bcrypt from 'bcrypt'
 import { cartRepository } from "../repositories/cartRepository";
+import { favoriteRepository } from "../repositories/favoriteRepository";
 
 export class UserController {
   async create(req: Request, res: Response) {
@@ -24,10 +25,14 @@ export class UserController {
     const newCart = cartRepository.create({ user: newUser });
     await cartRepository.save(newCart);
 
+    const newFavorites = favoriteRepository.create({ user: newUser });
+    await favoriteRepository.save(newFavorites);
+
     newUser.cart = newCart;
+    newUser.favorites = newFavorites;
     await userRepository.save(newUser);
 
-    const { password: _, cart,  ...user } = newUser
+    const { password: _, cart, favorites , ...user } = newUser
 
     return res.status(201).json(user)
   }
