@@ -6,6 +6,7 @@ import { authMiddleware } from './middlewares/authMiddleware'
 import { ProductsController } from './controllers/ProductsController'
 import { CartController } from './controllers/CartController'
 import { adminMiddleware } from './middlewares/adminMiddleware'
+import { FavController } from './controllers/FavController'
 
 const routes = Router()
 
@@ -18,6 +19,7 @@ routes.get('/products', new ProductsController().getProducts)
 routes.get('/profile', authMiddleware, new ProfileController().getProfile)
 
 routes.post('/cart', authMiddleware, new CartController().addToCart)
+routes.post('/favorites', authMiddleware, new FavController().addFavorite)
 routes.delete('/cart', authMiddleware, new CartController().removeAll)
 
 
