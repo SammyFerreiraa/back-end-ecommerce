@@ -1,5 +1,6 @@
 import { Column, Decimal128, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Cart } from "./Cart";
+import { Favorites } from "./Favorites";
 
 @Entity('products')
 export class Product {
@@ -39,4 +40,8 @@ export class Product {
   @ManyToOne(() => Cart, (cart) => cart.products)
   @JoinColumn()
   cart: Cart
+
+  @ManyToOne(() => Favorites, (favorites) => favorites.products)
+  @JoinColumn()
+  favorites: Cart
 }
