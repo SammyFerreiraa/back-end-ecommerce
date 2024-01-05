@@ -1,6 +1,7 @@
 import { Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 import { Product } from "./Product";
+import { ProductFav } from "./ProductFav";
 
 @Entity('favorites')
 export class Favorites {
@@ -11,9 +12,9 @@ export class Favorites {
   @JoinColumn()
   user: User
 
-  @OneToMany(() => Product, (product) => product.cart, {
+  @OneToMany(() => ProductFav, (product) => product.favorites, {
     eager: true
   })
   @JoinColumn()
-  products:   Product[]
+  products:   ProductFav[]
 }

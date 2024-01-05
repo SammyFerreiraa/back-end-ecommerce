@@ -2,8 +2,8 @@ import { Column, Decimal128, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColu
 import { Cart } from "./Cart";
 import { Favorites } from "./Favorites";
 
-@Entity('products')
-export class Product {
+@Entity('favproducts')
+export class ProductFav {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -34,10 +34,7 @@ export class Product {
   @Column({ type: 'boolean' })
   featured: boolean
 
-  @Column({ type: 'int' })
-  quantity: number
-
-  @ManyToOne(() => Cart, (cart) => cart.products)
+  @ManyToOne(() => Favorites, (favorites) => favorites.products)
   @JoinColumn()
-  cart: Cart
+  favorites: Favorites
 }
