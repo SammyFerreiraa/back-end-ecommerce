@@ -58,7 +58,9 @@ export class CartController {
     for (let i = 0; i < cartUsed.products.length; i++) {
       const product = await allProductsRepository.findOneBy({ code: cartUsed.products[i].code })
       if (!product) throw new BadRequestError("Product not found")
+
       product.availableQuantity += cartUsed.products[i].quantity
+      await productRepository.delete(cartUsed.products[i].id)
       await allProductsRepository.save(product)
     }
 
