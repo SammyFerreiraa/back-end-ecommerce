@@ -32,4 +32,17 @@ export class FavController {
     await favoriteRepository.save(favorites);
     return res.status(200).send('Product added to favorite').end();
   }
+
+  async removeFavorite(req: any, res: any) {
+    const { productCode } = req.body;
+
+    const product = await allProductsRepository.findOneBy({ code: productCode });
+    if (!product) throw new BadRequestError("Product not found");
+
+    const favorite = await productFavRepository.findOneBy({ code: productCode });
+    if (!favorite) throw new BadRequestError("Product not found");
+
+    await productFavRepository.delete(favorite.id);
+    return res.status(200).send('Product removed from favorite').end();
+  }
 }

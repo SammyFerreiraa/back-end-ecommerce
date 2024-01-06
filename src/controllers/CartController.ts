@@ -101,8 +101,35 @@ export class CartController {
 
     product.availableQuantity -= quantity - productCart.quantity
     await allProductsRepository.save(product)
-
     productCart.quantity = quantity
+    
+    if (productCart.quantity === 0) {
+      await productRepository.delete(productCart.id)
+      return res.status(200).send('Product removed from cart').end()
+    }
+
+    await productRepository.save(productCart)
+    return res.status(200).send('Quantity updated').end()
+  }
+
+  async removeOneProduct(req: Request, res: Response) {
+    const { productCode } = req.body
+
+    const product = await allProductsRepository.findOneBy({ code: productCode })
+    if (!product) throw new BadRequestError("Product not found")
+
+    const productCart = await productRepository.findOneBy({ code: productCode })
+    if (!productCart) throw new BadRequestError("Product not found")
+
+    product.availableQuantity += 1
+    await allProductsRepository.save(product)
+    productCart.quantity -= 1
+    
+    if (productCart.quantity === 0) {
+      await productRepository.delete(productCart.id)
+      return res.status(200).send('Product removed from cart').end()
+    }
+
     await productRepository.save(productCart)
     return res.status(200).send('Quantity updated').end()
   }
