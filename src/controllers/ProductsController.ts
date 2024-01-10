@@ -8,6 +8,13 @@ export class ProductsController {
     return res.json(products) 
   }
 
+  async getProduct (req: Request, res: Response) {
+    const { code } = req.body
+    const product = await allProductsRepository.findOneBy({ code })
+    if (!product) throw new BadRequestError('Product not found')
+    return res.json(product)
+  }
+
   async createProduct (req: Request, res: Response) {
     const { name, price, description, availableQuantity, featured, category, image, code, discount, offer } = req.body
 
