@@ -16,6 +16,7 @@ routes.post('/login', new LoginController().login)
 
 routes.get('/products', new ProductsController().getProducts)
 routes.post('/products', new ProductsController().getProduct)
+routes.post('/category', new ProductsController().getCategory)
 
 routes.get('/profile', authMiddleware, new ProfileController().getProfile)
 

@@ -15,6 +15,13 @@ export class ProductsController {
     return res.json(product)
   }
 
+  async getCategory (req: Request, res: Response) {
+    const { category } = req.body
+    const products = await allProductsRepository.findBy({ category })
+    if (!products) throw new BadRequestError('Product not found')
+    return res.json(products)
+  }
+
   async createProduct (req: Request, res: Response) {
     const { name, price, description, availableQuantity, featured, category, image, code, discount, offer } = req.body
 
