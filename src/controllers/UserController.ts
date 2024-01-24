@@ -7,6 +7,7 @@ import { favoriteRepository } from "../repositories/favoriteRepository";
 
 export class UserController {
   async create(req: Request, res: Response) {
+    try {
     const { name, email, password } = req.body
 
     const userExists = await userRepository.findOne({ where: { email } })
@@ -24,16 +25,20 @@ export class UserController {
 
     const newCart = cartRepository.create({ user: newUser });
     await cartRepository.save(newCart);
-
+    
     const newFavorites = favoriteRepository.create({ user: newUser });
     await favoriteRepository.save(newFavorites);
-
+    
     newUser.cart = newCart;
     newUser.favorites = newFavorites;
     await userRepository.save(newUser);
 
     const { password: _, cart, favorites , ...user } = newUser
 
+
     return res.status(201).json(user)
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
